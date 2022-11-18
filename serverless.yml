@@ -1,0 +1,57 @@
+service: reto-tecnico
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  versionFunctions: false
+  region: us-east-1
+  environment:
+    AWS_DYNAMO_TBL_TOKENIZADOR: ${self:custom.tbl_tokenizador}
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+  - serverless-dynamodb-local
+
+package:
+  individually: true
+
+custom:
+  tbl_tokenizador: tbl_tokenizador
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+
+functions:
+  generarToken:
+    handler: handler.generarToken
+    name: generarToken
+    memorySize: 128 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: token
+          method: post
+
+resources:
+  Resources:
+    TblTokenizador:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tbl_tokenizador}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

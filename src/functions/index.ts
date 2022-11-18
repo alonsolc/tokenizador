@@ -1,0 +1,1 @@
+export { generarToken, obtenerToken } from './tokenizacion';

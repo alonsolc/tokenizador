@@ -1,0 +1,49 @@
+{
+  "name": "reto-tecnico",
+  "version": "1.0.0",
+  "description": "Serverless aws-nodejs-typescript template",
+  "engines": {
+    "node": ">=14.15.0"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "start": "serverless offline start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "keywords": [
+    "serverless",
+    "nodejs"
+  ],
+  "author": "Alonso Lipa Cueva",
+  "license": "MIT",
+  "devDependencies": {
+    "@serverless/typescript": "^3.0.0",
+    "@types/aws-lambda": "^8.10.71",
+    "@types/node": "^14.14.25",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "esbuild": "^0.14.11",
+    "eslint": "^8.28.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.5.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "husky": "^8.0.2",
+    "json-schema-to-ts": "^1.5.0",
+    "lint-staged": "^13.0.3",
+    "serverless": "^3.0.0",
+    "serverless-esbuild": "^1.23.3",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "@middy/core": "^3.4.0",
+    "@middy/http-json-body-parser": "^3.4.0",
+    "aws-sdk": "^2.1255.0",
+    "crypto-random-string": "^5.0.0",
+    "serverless-offline": "^11.3.0"
+  }
+}
