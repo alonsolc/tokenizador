@@ -5,47 +5,61 @@ provider:
   name: aws
   runtime: nodejs14.x
   versionFunctions: false
+  stage: ${opt:stage, 'desa'}
   region: us-east-1
   environment:
-    AWS_DYNAMO_TBL_TOKENIZADOR: ${self:custom.tbl_tokenizador}
+    tableName: ${self:custom.tableName}
+  apiGateway:
+    description: reto - tecnico - api - ${self:provider.stage}
+  iam:
+    role:
+      name: reto-tecnico-role-${self:provider.stage}
+      path: /reto-tecnico-role-${self:provider.stage}/
 
 plugins:
   - serverless-esbuild
   - serverless-offline
-  - serverless-dynamodb-local
 
 package:
   individually: true
 
 custom:
-  tbl_tokenizador: tbl_tokenizador
-  dynamodb:
-    stages:
-      - dev
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-    migration:
-      dir: offline/migrations
+  tableName: tbl_tokenizacion_${self:provider.stage}
 
 functions:
-  generarToken:
-    handler: handler.generarToken
-    name: generarToken
+  simularTokenizacion:
+    handler: ./src/controller/TarjetaController.simularTokenizacion
+    name: simularTokenizacion
     memorySize: 128 # mb
     timeout: 10 # seconds
     events:
       - http:
           path: token
           method: post
+          request:
+            schemas:
+              application/json: ${file(./src/request/SimularTokenizacionRequest.json)}
+  
+  obtenerTarjeta:
+    handler: ./src/controller/TarjetaController.obtenerTarjeta
+    name: obtenerTarjeta
+    memorySize: 128 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: tarjeta
+          method: get
+          request:
+            parameters:
+              querystrings:
+                token: true
 
 resources:
   Resources:
-    TblTokenizador:
+    TblTokenizacion:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.tbl_tokenizador}
+        TableName: ${self:custom.tableName}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -55,3 +69,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        TimeToLiveSpecification:
+          AttributeName: fecha_expiracion
+          Enabled: true 

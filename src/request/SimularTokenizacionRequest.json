@@ -1,0 +1,58 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-01/schema#",
+    "type": "object",
+    "title": "SimularTokenizacionRequest",
+    "required": [
+        "card_number",
+        "cvv",
+        "expiration_month",
+        "expiration_year",
+        "email"
+    ],
+    "properties": {
+        "card_number": {
+            "type": "string",
+            "pattern": "[a-zA-Z0-9]"
+        },
+        "cvv": {
+            "type": "integer",
+            "enum": [
+                123,
+                4532
+            ]
+        },
+        "expiration_month": {
+            "type": "string",
+            "enum": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12"
+            ]
+        },
+        "expiration_year": {
+            "type": "string",
+            "enum": [
+                "2022",
+                "2023",
+                "2024",
+                "2025",
+                "2026",
+                "2027"
+            ]
+        },
+        "email": {
+            "type": "string",
+            "pattern": "[a-zA-Z0-9]"
+        }
+    }
+}
