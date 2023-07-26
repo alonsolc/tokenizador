@@ -1,7 +1,7 @@
 {
-  "name": "reto-tecnico",
+  "name": "sls-backend-culqi-tokenization",
   "version": "1.0.0",
-  "description": "Serverless aws-nodejs-typescript template",
+  "description": "Prueba técnica de Culqi",
   "engines": {
     "node": ">=14.15.0"
   },
@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "start": "serverless offline start",
+    "start:local": "serverless offline start",
     "test": "jest",
     "prepare": "husky install"
   },
@@ -45,7 +45,11 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.22.9",
     "aws-sdk": "^2.1255.0",
-    "crypto-random-string": "^5.0.0"
+    "joi": "^17.9.2",
+    "luhn": "^2.4.1",
+    "moment-timezone": "^0.5.43",
+    "nanoid": "^4.0.2"
   }
 }

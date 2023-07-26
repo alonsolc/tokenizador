@@ -1,20 +1,21 @@
-service: reto-tecnico
-frameworkVersion: "3"
+service: sls-backend-culqi-tokenization
+frameworkVersion: '3'
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   versionFunctions: false
-  stage: ${opt:stage, 'desa'}
+  stage: ${opt:stage, 'dev'}
   region: us-east-1
   environment:
-    tableName: ${self:custom.tableName}
+    BEARER_TOKEN: pk_test_LsRBKejzCOEEWOsw
+    MONGO_URI: mongodb+srv://db_user_alipac:yZIJZmlKJKU7w3dl@cluster0.civgv.mongodb.net/?retryWrites=true&w=majority
   apiGateway:
-    description: reto - tecnico - api - ${self:provider.stage}
+    description: sls-backend-culqi-tokenization-${self:provider.stage}
   iam:
     role:
-      name: reto-tecnico-role-${self:provider.stage}
-      path: /reto-tecnico-role-${self:provider.stage}/
+      name: sls-backend-culqi-tokenization-role-${self:provider.stage}
+      path: /sls-backend-culqi-tokenization-role-${self:provider.stage}/
 
 plugins:
   - serverless-esbuild
@@ -23,52 +24,27 @@ plugins:
 package:
   individually: true
 
-custom:
-  tableName: tbl_tokenizacion_${self:provider.stage}
-
 functions:
-  simularTokenizacion:
-    handler: ./src/controller/TarjetaController.simularTokenizacion
-    name: simularTokenizacion
+  saveCard:
+    handler: lambda/saveCard.handler
+    name: saveCard-${self:provider.stage}
     memorySize: 128 # mb
     timeout: 10 # seconds
     events:
       - http:
-          path: token
+          path: card
           method: post
-          request:
-            schemas:
-              application/json: ${file(./src/request/SimularTokenizacionRequest.json)}
-  
-  obtenerTarjeta:
-    handler: ./src/controller/TarjetaController.obtenerTarjeta
-    name: obtenerTarjeta
+
+  getCard:
+    handler: lambda/getCard.handler
+    name: getCard-${self:provider.stage}
     memorySize: 128 # mb
     timeout: 10 # seconds
     events:
       - http:
-          path: tarjeta
+          path: card
           method: get
           request:
             parameters:
               querystrings:
                 token: true
-
-resources:
-  Resources:
-    TblTokenizacion:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.tableName}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TimeToLiveSpecification:
-          AttributeName: fecha_expiracion
-          Enabled: true 
